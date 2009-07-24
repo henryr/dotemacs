@@ -14,20 +14,20 @@
 
 (global-set-key "\C-x\C-y" 'yas/minor-mode)
 
-;cedet
-;(add-to-list 'load-path "~/.emacs.d/cedet-1.0pre6/common/")
-;(load "cedet.el")
-;(global-ede-mode 1)                      ; Enable the Project management system
-;(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
-;(global-srecode-minor-mode 1)            ; Enable template insertion menu
+;; ;cedet
+;; ;(add-to-list 'load-path "~/.emacs.d/cedet-1.0pre6/common/")
+;; ;(load "cedet.el")
+;; ;(global-ede-mode 1)                      ; Enable the Project management system
+;; ;(semantic-load-enable-code-helpers)      ; Enable prototype help and smart completion 
+;; ;(global-srecode-minor-mode 1)            ; Enable template insertion menu
 
-;(add-to-list 'load-path "~/.emacs.d/ecb-2.40")
-;(require 'ecb)
-;(global-set-key "\C-b" 'speedbar-get-focus)
+;; ;(add-to-list 'load-path "~/.emacs.d/ecb-2.40")
+;; ;(require 'ecb)
+;; ;(global-set-key "\C-b" 'speedbar-get-focus)
 
-;; python
-;(add-hook 'python-mode-hook (lambda ( )(yas/minor-mode)))
-; This is supposed to make return to newline-and-indent
+;; ;; python
+;; ;(add-hook 'python-mode-hook (lambda ( )(yas/minor-mode)))
+;; ; This is supposed to make return to newline-and-indent
 (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map "\C-m" 'newline-and-indent)))
 
 (add-to-list 'load-path "~/.emacs.d/Pymacs-0.23/")
@@ -37,7 +37,9 @@
 (autoload 'pymacs-exec "pymacs" nil t)
 (autoload 'pymacs-load "pymacs" nil t)
 
-(pymacs-load "ropemacs" "rope-")
+;; This causes recursion (max-specpdl-depth) errors on seemingly harmless
+;; functions (e.g. describe-function)
+;;(pymacs-load "ropemacs" "rope-")
 
 ;(add-to-list 'load-path "~/.emacs.d/slime")
 ;(require 'slime-autoloads)
@@ -125,15 +127,17 @@
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 
+;; winring - save configurations of windows to a ring
+(require 'winring)
+(winring-initialize)
+
 ; irc
 (setq erc-autojoin-channels-alist
           '(("freenode.net" "#emacs" "#hadoop" "#java" "#erlang" "#cloudera" "#python" "#algorithms")
             ("cloudera.com" "#eng" "#twitter" "#logs")))
 
-(defun join-irc ()
-  (interactive)
-  (erc :server "irc.freenode.net" :port 6667 :nick "hnr" :password "gingko")
-  (erc :server "irc.sf.cloudera.com" :port 6667 :nick "henry"))
+
+(require 'my-irc)
   
 (fset 'irc-windows
    [?\C-x ?r ?w ?b ?\C-x ?b ?e ?n ?g return ?\C-x ?2 ?\C-x ?3 ?\C-x ?o ?\C-x ?3 ?\C-x ?b ?t ?w ?i ?t ?t ?e ?r return ?\C-x ?o ?\C-x ?b ?l ?o ?g ?s return ?\C-x ?o ?\C-x ?3 ?\C-x ?b ?h ?a ?d ?o ?o ?p return ?\C-x ?o ?\C-x ?b ?c ?l ?o ?u ?d ?e ?r ?a return ?\C-x ?r ?w ?a ?\C-x ?r ?j ?b])
@@ -154,3 +158,5 @@
 ; speedbar in same window
 (load "sr-speedbar.el")
 (sr-speedbar-open)
+
+(global-set-key (kbd "C-M-t") 'sr-speedbar-toggle)
