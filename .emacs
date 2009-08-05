@@ -26,20 +26,31 @@
 ;; ;(global-set-key "\C-b" 'speedbar-get-focus)
 
 ;; ;; python
-;; ;(add-hook 'python-mode-hook (lambda ( )(yas/minor-mode)))
-;; ; This is supposed to make return to newline-and-indent
-(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map "\C-m" 'newline-and-indent)))
 
-(add-to-list 'load-path "~/.emacs.d/Pymacs-0.23/")
-(autoload 'pymacs-apply "pymacs")
-(autoload 'pymacs-call "pymacs")
-(autoload 'pymacs-eval "pymacs" nil t)
-(autoload 'pymacs-exec "pymacs" nil t)
-(autoload 'pymacs-load "pymacs" nil t)
+; Cleanup whitespace on save
+(defun my-whitespace-hook ()
+	(let ((ext (file-name-extension buffer-file-truename)))
+					(when (or (equal ext "erl")
+										(equal ext "py"))
+						(whitespace-cleanup))))
+
+(add-hook 'before-save-hook 'my-whitespace-hook)
+
+;; This is supposed to make return to newline-and-indent
+(add-hook 'python-mode-hook '(lambda () (define-key python-mode-map "\C-m" 'newline-and-indent)))
 
 ;; This causes recursion (max-specpdl-depth) errors on seemingly harmless
 ;; functions (e.g. describe-function)
-;;(pymacs-load "ropemacs" "rope-")
+;; Seems to be fixed in new Aquamacs 2.0pre1 but that has its own issues!
+
+;; (add-to-list 'load-path "~/.emacs.d/Pymacs-0.23/")
+;; (autoload 'pymacs-apply "pymacs")
+;; (autoload 'pymacs-call "pymacs")
+;; (autoload 'pymacs-eval "pymacs" nil t)
+;; (autoload 'pymacs-exec "pymacs" nil t)
+;; (autoload 'pymacs-load "pymacs" nil t)
+
+;; (pymacs-load "ropemacs" "rope-")
 
 ;(add-to-list 'load-path "~/.emacs.d/slime")
 ;(require 'slime-autoloads)
@@ -48,6 +59,10 @@
 
 ;; git
 (require 'git-emacs)
+
+;; erlang
+(add-to-list 'load-path "~/.emacs.d/erlang")
+(require 'erlang)
 
 ;; ido
 (require 'ido)
@@ -100,7 +115,6 @@
 
 ;; misc key bindings
 (global-set-key "\C-x\C-e" 'eval-buffer)
-(global-set-key "\C-c\C-s" 'speedbar)
 (global-set-key "\M-o" 'other-frame)	
 
 (defun select-next-window ( )
@@ -113,14 +127,10 @@
   (interactive)
   (select-window (previous-window) ) )
 
-(global-set-key (kbd "C-<right>") 'select-next-window)
-(global-set-key (kbd "C-<left>") 'select-previous-window)
-
 (global-set-key (kbd "C-M-<up>") 'windmove-up)
 (global-set-key (kbd "C-M-<down>") 'windmove-down)
 (global-set-key (kbd "C-M-<left>") 'windmove-left)
 (global-set-key (kbd "C-M-<right>") 'windmove-right)
-
 
 ;; visuals
 
@@ -157,6 +167,4 @@
 		
 ; speedbar in same window
 (load "sr-speedbar.el")
-(sr-speedbar-open)
-
 (global-set-key (kbd "C-M-t") 'sr-speedbar-toggle)
