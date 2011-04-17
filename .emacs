@@ -1,5 +1,13 @@
 (add-to-list 'load-path "~/.emacs.d/")
 
+;; Browse kill ring
+(require 'browse-kill-ring)
+(global-set-key (kbd "C-c k") 'browse-kill-ring)
+
+;; Autopair parentheses
+(require 'autopair)
+(autopair-global-mode)
+
 ;; ido - fuzzy string-matching buffer completion
 (require 'ido)
 (ido-mode t)
@@ -22,9 +30,9 @@
        ido-execute-command-cache)))))
 
 (add-hook 'ido-setup-hook
-	  (lambda ()
-	    (setq ido-enable-flex-matching t)
-	    (global-set-key "\M-x" 'ido-execute-command)))
+    (lambda ()
+      (setq ido-enable-flex-matching t)
+      (global-set-key "\M-x" 'ido-execute-command)))
 
 ;; Use the semantic speedbar, so contextual information can be seen in it
 (require 'semantic/sb)
@@ -41,7 +49,7 @@
 ;; xelatex
 (defun init-xelatex nil nil (interactive)
   (add-to-list 'LaTeX-command-style
-	       '("\\`fontspec\\'" "xelatex %S%(PDFout)")))
+         '("\\`fontspec\\'" "xelatex %S%(PDFout)")))
 (add-hook 'latex-mode-hook 'init-xelatex)
 
 ;; snippets - like textmate, type a keyword then tab to expand to a template
@@ -51,7 +59,7 @@
 (yas/load-directory "~/.emacs.d/yasnippet-0.5.10/snippets")
 (yas/load-directory "~/.emacs.d/scala-mode/contrib/yasnippet")
 
-;; ecb - emacs code browser. kind of useful. 
+;; ecb - emacs code browser. kind of useful.
 (add-to-list 'load-path "~/.emacs.d/ecb-2.40")
 (require 'ecb)
 
@@ -60,14 +68,14 @@
 
 ;; Cleanup whitespace on save
 (defun my-whitespace-hook ()
-	(let ((ext (file-name-extension buffer-file-truename)))
-					(when (or (equal ext "erl")
-										(equal ext "py")
-										(equal ext "java")
-										(equal ext "html")
-										(equal ext "mako")
-										(equal ext "jsp"))
-						(delete-trailing-whitespace))))
+  (let ((ext (file-name-extension buffer-file-truename)))
+          (when (or (equal ext "erl")
+                    (equal ext "py")
+                    (equal ext "java")
+                    (equal ext "html")
+                    (equal ext "mako")
+                    (equal ext "jsp"))
+            (delete-trailing-whitespace))))
 
 (add-hook 'before-save-hook 'my-whitespace-hook)
 
@@ -77,7 +85,7 @@
   (interactive)
   (save-excursion
     (back-to-indentation)
-    (if (string= (buffer-substring-no-properties (point) (line-end-position)) 
+    (if (string= (buffer-substring-no-properties (point) (line-end-position))
                  arg)
         (progn
           (delete-region (line-beginning-position) (line-end-position))
@@ -87,10 +95,14 @@
         (insert arg)
         (newline-and-indent)))))
 
+;; elisp
+(add-hook 'emacs-lisp-mode-hook '(lambda () (progn
+                                         (define-key emacs-lisp-mode-map "\C-c\C-r" 'eval-region)
+                                         (define-key emacs-lisp-mode-map "\C-c\C-b" 'eval-buffer))))
 ;; python
 (defun insert-ipdb ()
   (interactive)
-	(toggle-insert-line "import ipdb; ipdb.set_trace()"))
+  (toggle-insert-line "import ipdb; ipdb.set_trace()"))
 
 (defun insert-py-copyright ()
   (interactive)
@@ -99,9 +111,9 @@
 
 ;; This is supposed to make return to newline-and-indent, and for some
 ;; reason python has its own default variable
-(add-hook 'python-mode-hook '(lambda () (progn 
- 																					(define-key python-mode-map "\C-m" 'newline-and-indent)
- 																					(setq python-indent 2))))
+(add-hook 'python-mode-hook '(lambda () (progn
+                                           (define-key python-mode-map "\C-m" 'newline-and-indent)
+                                           (setq python-indent 2))))
 
 (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map "\C-\M-d" 'insert-ipdb)))
 (add-hook 'python-mode-hook '(lambda () (define-key python-mode-map "\C-\M-c" 'insert-py-copyright)))
@@ -109,17 +121,17 @@
 ;; pyflakes
 ;; This is slightly buggy - sometimes leaves extra files around.
 (when (load "flymake" t)
-	(defun flymake-pyflakes-init ()
-		(let* ((temp-file (flymake-init-create-temp-buffer-copy
-											 'flymake-create-temp-inplace))
-					 (local-file (file-relative-name
-												temp-file
-												(file-name-directory buffer-file-name))))
-			(list "/usr/local/bin/pyflakes" (list local-file))))
-	(add-to-list 'flymake-allowed-file-name-masks
-							 '("\\.py\\'" flymake-pyflakes-init)))
+  (defun flymake-pyflakes-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "/usr/local/bin/pyflakes" (list local-file))))
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.py\\'" flymake-pyflakes-init)))
 
-(add-hook 'find-file-hook 'flymake-find-file-hook)
+;; (add-hook 'find-file-hook 'flymake-find-file-hook)
 (global-set-key [f5] 'flymake-goto-prev-error)
 (global-set-key [f6] 'flymake-goto-next-error)
 
@@ -136,15 +148,15 @@
 
 ;; Either comments the region you have selected, or the current line
 (defun comment-smart ()
-	(interactive)
+  (interactive)
   (if (not (region-active-p))
       (save-excursion
         (comment-or-uncomment-region (line-beginning-position) (line-end-position)))
     (let ((start (region-beginning))
           (end (region-end)))
-          (save-excursion 
+          (save-excursion
             (goto-char start)
-            (comment-or-uncomment-region (line-beginning-position) end))))) 
+            (comment-or-uncomment-region (line-beginning-position) end)))))
 
 (global-set-key "\M-;" 'comment-smart)
 
@@ -180,13 +192,17 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (setq inhibit-startup-message t)
 (set-default-font "Courier")
-		
+
 ;; Mac-specific fullscreen mode
 (global-set-key "\C-c\C-f" 'ns-toggle-fullscreen)
 
 ;; Multi-term
 (require 'multi-term)
-(setq multi-term-program "/Users/henry/.emacs-zsh")
+(setq multi-term-program "/bin/zsh") ;"/Users/henry/.emacs-zsh")
+
+(require 'reviewboard-mode)
+(require 'cloudera)
+(show-paren-mode)
 
 ;; Pretty colour theme
 (defun color-theme-henry (&optional preview)
@@ -335,6 +351,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0/")
 (require 'color-theme)
+(require 'color-theme-sanityinc-solarized)
 (eval-after-load "color-theme"
   '(progn
      (color-theme-initialize)

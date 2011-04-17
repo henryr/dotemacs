@@ -255,7 +255,7 @@
   :type 'integer
   :group 'sr-speedbar)
 
-(defcustom sr-speedbar-max-width 50
+(defcustom sr-speedbar-max-width 24
   "The max width limit that window allowed.
 Default, if hide `sr-speedbar' window will remember
 window width, except the window width larger than
