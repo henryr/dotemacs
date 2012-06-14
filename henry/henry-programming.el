@@ -24,6 +24,10 @@
                     (equal ext "java")
                     (equal ext "html")
                     (equal ext "mako")
+                    (equal ext "cc")
+                    (equal ext "hh")
+                    (equal ext "c")
+                    (equal ext "h")
                     (equal ext "jsp"))
             (delete-trailing-whitespace))))
 
@@ -32,6 +36,7 @@
 (add-hook 'java-mode-hook (lambda () (linum-mode)))
 (add-hook 'haskell-mode-hook (lambda () (linum-mode)))
 (add-hook 'c-mode-hook (lambda () (linum-mode)))
+(add-hook 'c++-mode-hook (lambda () (linum-mode)))
 (add-hook 'python-mode-hook (lambda () (linum-mode)))
 (add-hook 'emacs-lisp-mode-hook (lambda () (linum-mode)))
 

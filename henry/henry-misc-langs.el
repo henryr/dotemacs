@@ -24,11 +24,13 @@
 
 ;; erlang
 (add-to-list 'load-path "~/.emacs.d/erlang")
-(require 'erlang)
+(autoload 'erlang "erlang.el" t)
 
 ;; clojure
 (add-to-list 'load-path "~/.emacs.d/clojure-mode")
-(require 'clojure-mode)
+(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+(autoload 'clojure-mode "clojure-mode.el" t)
+;(require 'clojure-mode)
 
 ;; scala
 (add-to-list 'load-path "~/.emacs.d/scala-mode")

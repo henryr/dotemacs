@@ -41,4 +41,22 @@
 (set-default-font "DejaVu Sans Mono")
 (set-face-attribute 'default nil :height 100)
 
+(setq-default frame-title-format 
+   (list '((buffer-file-name " %f" 
+             (dired-directory 
+              dired-directory 
+              (revert-buffer-function " %b" 
+              ("%b - Dir:  " default-directory))))))) 
+
+(line-number-mode)
+(setq linum-format " %d ")
+(column-number-mode)
+(fringe-mode 0)
+
+(global-set-key "\M-[" 'previous-multiframe-window)
+(global-set-key "\M-]" 'next-multiframe-window)
+
+(global-set-key "\C-cw" 'whitespace-mode)
+(global-set-key "\C-cu" 'untabify)
+
 (provide 'henry-emacs)
