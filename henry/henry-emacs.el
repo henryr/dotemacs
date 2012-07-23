@@ -53,6 +53,9 @@
 (column-number-mode)
 (fringe-mode 0)
 
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
 (global-set-key "\M-[" 'previous-multiframe-window)
 (global-set-key "\M-]" 'next-multiframe-window)
 
